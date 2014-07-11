@@ -1,46 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Woot Woot by bcchuan</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Woot Woot : social coding" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Woot Woot</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">Woot Woot</h1>
-        <p class="header">social coding</p>
 
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/bcchuan">View on GitHub</a>
 
+          <h1 id="project_title">Woot Woot</h1>
+          <h2 id="project_tagline">social coding</h2>
 
-        <ul>
-          <li><a class="buttons github" href="https://github.com/bcchuan">GitHub Profile</a></li>
-        </ul>
+        </header>
+    </div>
 
-      </header>
-      <section>
-        <h3>
-<a name="programming-languages-matter" class="anchor" href="#programming-languages-matter"><span class="octicon octicon-link"></span></a>Programming languages matter.</h3>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a name="programming-languages-matter" class="anchor" href="#programming-languages-matter"><span class="octicon octicon-link"></span></a>Programming languages matter.</h2>
 
 <p>Programming languages affect the reliability, security, and efficiency of the code you write, as well as how easy it is to read, refactor, and extend. The languages you know can also change how you think, influencing the way you design software even when you're not using them.</p>
 
 <ul>
-<li>From the book "Real World OCaml"</li>
-</ul>
+<li>From the book "Real World OCaml" <a href="https://realworldocaml.org">https://realworldocaml.org</a>
+</li>
+</ul><h2>
+<a name="ocaml-installation" class="anchor" href="#ocaml-installation"><span class="octicon octicon-link"></span></a>OCaml Installation</h2>
+
+<h3>
+<a name="step-1-install-opam" class="anchor" href="#step-1-install-opam"><span class="octicon octicon-link"></span></a>Step 1: Install OPAM</h3>
+
+<p>On Mac OS X : my version is Maverick</p>
+
+<pre><code>$ brew update
+$ brew install opam
+</code></pre>
+
+<p>On Ubuntu 12 : mine is from <a href="http://www.contiki-os.org/start.html">http://www.contiki-os.org/start.html</a></p>
+
+<pre><code>$ add-apt-repository ppa:avsm/ppa
+$ apt-get update
+$ apt-get install curl build-essential m4 ocaml opam
+</code></pre>
+
+<h3>
+<a name="step-2-install-opam-modules" class="anchor" href="#step-2-install-opam-modules"><span class="octicon octicon-link"></span></a>Step 2: Install OPAM modules</h3>
+
+<p>On either Max OS X or Ubuntu 12:</p>
+
+<pre><code>$ opam init
+$ opam install core utop
+$ opam install async yojson core_extended core_bench \
+               cohttp async_graphics cryptokit menhir
+$ eval `opam config env`
+</code></pre>
+
+<h3>
+<a name="step-3-edit-the-ocamlinit-file" class="anchor" href="#step-3-edit-the-ocamlinit-file"><span class="octicon octicon-link"></span></a>Step 3: Edit the '.ocamlinit' file</h3>
+
+<pre><code>$ vi .ocamlinit
+</code></pre>
+
+<p>Add the following lines:</p>
+
+<pre><code>#use "topfind";;
+#thread;;
+#camlp4o;;
+#require "core.top";;
+#require "core.syntax";;
+</code></pre>
+
+<h3>
+<a name="step-4-start-the-ocaml-shell-or-the-utop-shell" class="anchor" href="#step-4-start-the-ocaml-shell-or-the-utop-shell"><span class="octicon octicon-link"></span></a>Step 4: Start the 'ocaml' shell or the 'utop' shell</h3>
+
+<pre><code>$ ocaml
+</code></pre>
+
+<pre><code>$ utop
+</code></pre>
+
+<p>Type Ctrl-D to quit.</p>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+    
+
   </body>
 </html>
