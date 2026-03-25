@@ -17,7 +17,6 @@ def magnitude(v):
 
 def cosine_similarity(a, b):
     return dot_product(a, b) / (magnitude(a) * magnitude(b))
-```
 
 >>> cosine_similarity([1, 2, 3], [1, 2, 3])
 1.0
