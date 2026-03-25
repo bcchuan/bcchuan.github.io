@@ -1,5 +1,10 @@
 # bcchuan.github.io
-Learning how to use the **GitHub Pages** for publishing and the **Markdown** syntax for page formating.
+
+## Prompt-Based Reasoning: 
+Instruct the model in your prompt to show its steps: "Analyze the following query, provide your reasoning, and then give the final answer: [Your Question]".
+
+## Cosine Similarity
+
 
 ```python
 import math
@@ -12,7 +17,7 @@ def magnitude(v):
 
 def cosine_similarity(a, b):
     return dot_product(a, b) / (magnitude(a) * magnitude(b))
-
+```
 
 >>> cosine_similarity([1, 2, 3], [1, 2, 3])
 1.0
