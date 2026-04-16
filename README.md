@@ -1,7 +1,117 @@
 # bcchuan.github.io
 
-## Algebraic Data Type (ADT)
+## Introduction to TypeScript
 
+### Variable Declarations
+```typescript
+let name: string = "John";
+let age: number = 30;
+let isActive: boolean = true;
+
+let hobbies = ["coding", "biking"]; // seen as an array of strings
+```
+
+### Functions
+```typescript
+function getName(id: number): string {
+  //...
+  return name; 
+}
+
+const log = (message: string): void => {
+  console.log(message);
+}
+```
+
+### Classes
+```typescript
+class Person {
+
+  // Fields
+  name: string;
+
+  // Constructor 
+  constructor(name: string) {
+    this.name = name;
+  }
+  
+  // Methods
+  greet() {
+    console.log(`Hello, ${this.name}!")
+  }
+
+}
+
+const person = new Person("Maria");
+person.greet();
+```
+
+### Generics
+```typescript
+function identity<T>(arg: T): T {
+  return arg; 
+}
+
+let output = identity<string>("myString");
+
+
+class Cache<T> {
+  store: T;
+  constructor(value: T) {
+    this.store = value;
+  }
+}
+
+let stringCache = new Cache<string>("cached string");
+```
+
+### Enumerations
+```typescript
+enum Direction {
+  Up = 1, 
+  Down = 2,
+  Left = 3,
+  Right = 4  
+}
+
+let current = Direction.Up;
+```
+
+### Decorators
+```typescript
+function Log(target: any, propertyKey: string) {
+  let value = target[propertyKey];
+
+  const getter = () => {
+    console.log(`Getting ${propertyKey}`);
+    return value;
+  };
+
+  const setter = (newVal) => {
+    console.log(`Setting ${propertyKey}`);
+    value = newVal;
+  }
+
+  Object.defineProperty(target, propertyKey, {
+    get: getter,
+    set: setter
+  });
+}
+
+class Person {
+  @Log
+  name: string;
+  
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+let person = new Person("John");
+person.name = "Sara"; 
+```
+
+## Algebraic Data Type (ADT) in TypeScript
 ```typescript
 interface Circle {
   kind: "circle"; // Discriminant
@@ -29,9 +139,7 @@ function getArea(shape: Shape) {
 ## Prompt-Based Reasoning 
 Instruct the model in your prompt to show its steps: "Analyze the following query, provide your reasoning, and then give the final answer: [Your Question]".
 
-## Cosine Similarity
-
-
+## Cosine Similarity in Python
 ```python
 import math
 
@@ -50,3 +158,5 @@ def cosine_similarity(a, b):
 -1.0
 >>> cosine_similarity([1, 0, 0], [0, 1, 0])
 0.0
+```
+
