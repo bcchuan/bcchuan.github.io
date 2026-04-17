@@ -1,5 +1,15 @@
 # bcchuan.github.io
 
+## Setup a Data Science Project with uv run jupyter lab
+
+```bash
+uv init weather_analysis
+cd weather_analysis
+uv add pandas matplotlib
+uv add --dev jupyter
+uv run jupyter lab
+```
+
 ## Introduction to TypeScript
 
 ### Variable Declarations
