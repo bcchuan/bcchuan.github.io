@@ -195,3 +195,21 @@ class DecoupledIO:
             self.ready = pyrtl.Input(1, f'{name}_ready')
 
 ```
+```python
+import pyrtl
+
+from mypyrtl import DecoupledIO
+
+
+in_io = DecoupledIO('in', 8, flipped=True)
+out_io = DecoupledIO('out', 8)
+
+# Input: in_io.valid
+# Input: in_io.bits  
+# Output: in_io.ready
+
+# Output: out_io.valid
+# Output: out_io.bits
+# Input: out_io.ready
+
+```
