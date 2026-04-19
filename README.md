@@ -170,3 +170,28 @@ def cosine_similarity(a, b):
 0.0
 ```
 
+## DecoupledIO in Python
+
+```python
+import pyrtl
+
+
+class DecoupledIO:
+    """Groups valid/ready/bits signals for a ready-valid handshake interface.
+
+    flipped=False (default): producer side — valid and bits are Outputs, ready is Input.
+    flipped=True: consumer side — valid and bits are Inputs, ready is Output.
+    Mirrors Chisel's DecoupledIO and Flipped(DecoupledIO(...)).
+    """
+
+    def __init__(self, name: str, bitwidth: int, flipped: bool = False):
+        if flipped:
+            self.valid = pyrtl.Input(1, f'{name}_valid')
+            self.bits = pyrtl.Input(bitwidth, f'{name}_bits')
+            self.ready = pyrtl.Output(1, f'{name}_ready')
+        else:
+            self.valid = pyrtl.Output(1, f'{name}_valid')
+            self.bits = pyrtl.Output(bitwidth, f'{name}_bits')
+            self.ready = pyrtl.Input(1, f'{name}_ready')
+
+```
