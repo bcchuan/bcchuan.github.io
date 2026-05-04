@@ -1,5 +1,68 @@
 # bcchuan.github.io
 
+## How to install Go for Raspberry Pi 4
+
+```
+cd $HOME
+wget https://dl.google.com/go/go1.26.2.linux-arm64.tar.gz
+sudo tar -C /usr/local -xvf go1.26.2.linux-arm64.tar.gz
+```
+```
+vi ~/.bashrc
+
+export GOPATH=$HOME/go
+export PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
+```
+```
+source ~/.bashrc
+```
+
+## A Go program to print ASCII art
+
+ascii-art.go
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+
+    var stegosaurus = `         \                      .       .
+          \                    / ` + "`" + `.   .' "
+           \           .---.  <    > <    >  .---.
+            \          |    \  \ - ~ ~ - /  /    |
+          _____           ..-~             ~-..-~
+         |     |   \~~~\\.'                    ` + "`" + `./~~~/
+        ---------   \__/                         \__/
+       .'  O    \     /               /       \  "
+      (_____,    ` + "`" + `._.'               |         }  \/~~~/
+       ` + "`" + `----.          /       }     |        /    \__/
+             ` + "`" + `-.      |       /      |       /      ` + "`" + `. ,~~|
+                 ~-.__|      /_ - ~ ^|      /- _      ` + "`" + `..-'
+                      |     /        |     /     ~-.     ` + "`" + `-. _  _  _
+                      |_____|        |_____|         ~ - . _ _ _ _ _>
+    `
+
+
+    var cow = `         \  ^__^
+          \ (oo)\_______
+        (__)\       )\/\
+            ||----w |
+            ||     ||
+        `
+
+    fmt.Println(stegosaurus)
+    fmt.Println(cow)
+}
+```
+
+Run the go program:
+```
+go run ascii-art.go
+```
+
 ## Setup a Data Science Project with uv run jupyter lab
 
 ```bash
