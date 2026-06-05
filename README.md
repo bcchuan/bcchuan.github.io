@@ -63,6 +63,201 @@ Run the go program:
 go run ascii-art.go
 ```
 
+## Compile-time State Machine in Go
+
+```
+// i2c.go
+package main
+
+import (
+	"fmt"
+	"log"
+)
+
+// Enums are represented as typed integers in Go (idiomatic approach)
+type BusFrequency int
+
+const (
+	Standard100kHz BusFrequency = iota
+	Fast400kHz
+	FastPlus1MHz
+)
+
+type AddressMode int
+
+const (
+	SevenBit AddressMode = iota
+	TenBit
+)
+
+type TimingConfig struct {
+	SetupTimeNs  uint32
+	HoldTimeNs   uint32
+	TimeoutMs    uint32
+}
+
+type I2cConfig struct {
+	BusFrequency          BusFrequency
+	AddressMode           AddressMode
+	Timing                TimingConfig
+	EnableClockStretching bool
+	MasterMode            bool
+}
+
+// Builder methods return new instances (value semantics) to match Rust's `mut self` pattern
+func NewI2cConfig() I2cConfig {
+	return I2cConfig{
+		BusFrequency:          Standard100kHz,
+		AddressMode:           SevenBit,
+		Timing:                TimingConfig{SetupTimeNs: 250, HoldTimeNs: 300, TimeoutMs: 1000},
+		EnableClockStretching: true,
+		MasterMode:            true,
+	}
+}
+
+func (c I2cConfig) WithFrequency(freq BusFrequency) I2cConfig {
+	c.BusFrequency = freq
+	return c
+}
+
+func (c I2cConfig) WithAddressMode(mode AddressMode) I2cConfig {
+	c.AddressMode = mode
+	return c
+}
+
+func (c I2cConfig) WithTiming(t TimingConfig) I2cConfig {
+	c.Timing = t
+	return c
+}
+
+// State types: Each state is a distinct type to enforce compile-time safety.
+// Go doesn't have Rust's `impl<T>` or Scala's type-level generics, so separate types
+// are the idiomatic solution for strict state machines.
+type I2cControllerConfigured struct { config I2cConfig }
+type I2cControllerInitialized struct { config I2cConfig }
+type I2cControllerInstalled   struct { config I2cConfig }
+
+func NewI2cController(config I2cConfig) *I2cControllerConfigured {
+	fmt.Println("I2C Controller configured")
+	return &I2cControllerConfigured{config: config}
+}
+
+// Transitions from Configured -> Initialized state
+func (c *I2cControllerConfigured) Initialize() (*I2cControllerInitialized, error) {
+	fmt.Println("Initializing I2C controller...")
+	if c.config.Timing.TimeoutMs == 0 {
+		return nil, fmt.Errorf("timeout cannot be zero")
+	}
+	fmt.Println("Hardware initialized")
+	return &I2cControllerInitialized{config: c.config}, nil
+}
+
+// Transitions from Initialized -> Installed state
+func (c *I2cControllerInitialized) Install() *I2cControllerInstalled {
+	fmt.Println("Installing I2C driver...")
+	fmt.Println("Driver installed and ready")
+	return &I2cControllerInstalled{config: c.config}
+}
+
+// Operations only available in Installed state
+func (c *I2cControllerInstalled) Read(deviceAddr uint8, buffer []byte) error {
+	fmt.Printf("Reading %d bytes from device 0x%02X\n", len(buffer), deviceAddr)
+	for i := range buffer {
+		// Mimics Rust's wrapping_add for u8
+		buffer[i] = uint8(uint16(deviceAddr) + uint16(i))
+	}
+	return nil
+}
+
+func (c *I2cControllerInstalled) Write(deviceAddr uint8, data []byte) error {
+	fmt.Printf("Writing %d bytes to device 0x%02X: ", len(data), deviceAddr)
+	for _, b := range data {
+		fmt.Printf("%02X", b)
+	}
+	fmt.Println()
+	return nil
+}
+
+func (c *I2cControllerInstalled) GetConfig() *I2cConfig {
+	return &c.config
+}
+
+func main() {
+	fmt.Println("I2C Driver Compile-Time State Machine Demo")
+	fmt.Println("==========================================")
+
+	// Correct usage: Config -> Initialize -> Install -> Operations
+	fmt.Println("\n1. Correct usage:")
+	config := NewI2cConfig().WithFrequency(Fast400kHz).WithAddressMode(SevenBit)
+	controller := NewI2cController(config)
+
+	initialized, err := controller.Initialize()
+	if err != nil {
+		log.Fatalf("Failed to initialize: %v", err)
+	}
+
+	installed := initialized.Install()
+
+	buffer := make([]byte, 4)
+	if err := installed.Read(0x48, buffer); err != nil {
+		log.Fatal(err)
+	}
+	if err := installed.Write(0x50, []byte{0xAA, 0xBB}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Error case: Invalid configuration
+	fmt.Println("\n2. Error case - invalid config:")
+	badConfig := I2cConfig{
+		BusFrequency:          Standard100kHz,
+		AddressMode:           SevenBit,
+		Timing:                TimingConfig{SetupTimeNs: 200, HoldTimeNs: 250, TimeoutMs: 0}, // Invalid!
+		EnableClockStretching: true,
+		MasterMode:            true,
+	}
+
+	badController := NewI2cController(badConfig)
+	if _, err := badController.Initialize(); err != nil {
+		fmt.Printf("Expected error: %v\n", err)
+	} else {
+		fmt.Println("Unexpected success")
+	}
+
+	// The following would cause COMPILE-TIME ERRORS (uncomment to see):
+	/*
+		configured := NewI2cController(NewI2cConfig())
+		// configured.Read(0x48, buffer)  // ERROR: *I2cControllerConfigured does not have Read method
+		initialized2, _ := configured.Initialize()
+		// initialized2.Write(0x50, []byte{0xAA}) // ERROR: *I2cControllerInitialized does not have Write method
+	*/
+
+	fmt.Println("\nDemo completed - state machine enforces correct sequence!")
+}
+```
+
+Running the Go program produces the following output:
+
+```
+I2C Driver Compile-Time State Machine Demo
+==========================================
+
+1. Correct usage:
+I2C Controller configured
+Initializing I2C controller...
+Hardware initialized
+Installing I2C driver...
+Driver installed and ready
+Reading 4 bytes from device 0x48
+Writing 2 bytes to device 0x50: AABB
+
+2. Error case - invalid config:
+I2C Controller configured
+Initializing I2C controller...
+Expected error: timeout cannot be zero
+
+Demo completed - state machine enforces correct sequence!
+```
+
 ## Setup a Data Science Project with uv run jupyter lab
 
 ```bash
